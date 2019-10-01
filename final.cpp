@@ -10,35 +10,24 @@
 #include <string.h>
 #include <pthread.h>
 #include <limits.h>
+#include <stdbool.h> 
+#include <time.h>
 
 pthread_t tid[1001];
 
 //function
 char min[3], hor[3], day[3], mon[3], dyw[2];
 char execp[1000];
+time_t timestmp;
+struct tm *tmstmp;
+
+bool check_time();
 
 void* launch_exec(void *args)
 {
     char *execp = (char *) args;
     //system
     system(execp);
-    
-    return;
-}
-
-bool check_time()
-{
-	if
-	(
-		//note : ? if 1, then left side is executed, else do the right side
-		(strcmp(min, "*") == 0 ? 1 : atoi(min) == tmstmp->tm_min) &&
-		(strcmp(hor, "*") == 0 ? 1 : atoi(hor) == tmstmp->tm_hour) &&
-		(strcmp(day, "*") == 0 ? 1 : atoi(day) == tmstmp->tm_mday) &&
-		(strcmp(mon, "*") == 0 ? 1 : atoi(mon) == (tmstmp->tm_mon + 1)) &&
-		(strcmp(dyw, "*") == 0 ? 1 : atoi(dyw) == tmstmp->tm_wday)
-	)
-	return TRUE;
-	else FALSE;
 }
 
 int main()
@@ -80,11 +69,9 @@ int main()
 	
     while(1)
 	{
-        time_t timestmp;
-        struct tm *tmstmp;
         //time local
         time(&timestmp);
-        tmstmp = localtime(&rawtime);
+        tmstmp = localtime(&timestmp);
 		
 		//check if file isn't empty
 		FILE *config = fopen(tabfile, "r");
@@ -123,4 +110,19 @@ int main()
         sleep(1);
     }
     exit(EXIT_SUCCESS);
+}
+
+bool check_time()
+{
+	if
+	(
+		//note : ? if 1, then left side is executed, else do the right side
+		(strcmp(min, "*") == 0 ? 1 : atoi(min) == tmstmp->tm_min) &&
+		(strcmp(hor, "*") == 0 ? 1 : atoi(hor) == tmstmp->tm_hour) &&
+		(strcmp(day, "*") == 0 ? 1 : atoi(day) == tmstmp->tm_mday) &&
+		(strcmp(mon, "*") == 0 ? 1 : atoi(mon) == (tmstmp->tm_mon + 1)) &&
+		(strcmp(dyw, "*") == 0 ? 1 : atoi(dyw) == tmstmp->tm_wday)
+	)
+	return 1;
+	else 0;
 }
